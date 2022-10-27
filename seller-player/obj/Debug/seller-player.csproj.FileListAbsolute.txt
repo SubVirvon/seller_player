@@ -1,0 +1,8 @@
+C:\Users\Danii\source\repos\seller-player\seller-player\bin\Debug\seller-player.exe.config
+C:\Users\Danii\source\repos\seller-player\seller-player\bin\Debug\seller-player.exe
+C:\Users\Danii\source\repos\seller-player\seller-player\bin\Debug\seller-player.pdb
+C:\Users\Danii\source\repos\seller-player\seller-player\obj\Debug\seller-player.csproj.AssemblyReference.cache
+C:\Users\Danii\source\repos\seller-player\seller-player\obj\Debug\seller-player.csproj.SuggestedBindingRedirects.cache
+C:\Users\Danii\source\repos\seller-player\seller-player\obj\Debug\seller-player.csproj.CoreCompileInputs.cache
+C:\Users\Danii\source\repos\seller-player\seller-player\obj\Debug\seller-player.exe
+C:\Users\Danii\source\repos\seller-player\seller-player\obj\Debug\seller-player.pdb
