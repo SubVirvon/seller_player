@@ -12,7 +12,7 @@ namespace seller_player
         {
             bool isFinish = false;
             string input;
-            Player player = new Player(1000);
+            Player player = new Player(new List<Product> (), 1000);
             Seller seller = new Seller(new List<Product> { new Product("кожаный нагрудник", 400), new Product("железные сапоги", 350), new Product("меч", 500), new Product("лук", 200), new Product("декоративный нож", 800) });
 
             while (isFinish == false)
@@ -31,48 +31,23 @@ namespace seller_player
             }
         }
     }
-    
-    class Player
+
+    abstract class Person
     {
         public int Money { get; private set; }
-        private List<Product> _playerInventory = new List<Product>();
+        protected List<Product> _inventory = new List<Product>();
 
-        public Player(int money)
+        public Person(List<Product> products, int money)
         {
             Money = money;
+            _inventory = products;
         }
 
-        public void BuyProduct(int price, Product product)
-        {
-            Money -= price;
-            _playerInventory.Add(product);
-        }
-
-        public void ShowInventory()
-        {
-            Console.WriteLine("Игрок");
-
-            foreach (var product in _playerInventory)
-            {
-                Console.WriteLine($"{product.Title}");
-            }
-        }
-    }
-
-    class Seller
-    {
-        public int Money { get; private set; }
-        private List<Product> _sellerInventory = new List<Product>();
-
-        public Seller(List<Product> products)
-        {
-            Money = 0;
-            _sellerInventory = products;
-        }
+        public abstract void ShowInventory();
 
         public void SellProduct(Player player, string productTitle)
         {
-            /*foreach (var product in _sellerInventory) //не понимаю почему при выполнение данной строчки выдает ошибку
+            foreach (var product in _inventory)
             {
                 if (product.Title == productTitle && player.Money >= product.Cost)
                 {
@@ -80,27 +55,43 @@ namespace seller_player
 
                     player.BuyProduct(cost, product);
                     Money += cost;
-                    _sellerInventory.Remove(product);
-                }
-            }*/
-            for (int i = 0; i < _sellerInventory.Count; i++)
-            {
-                if (_sellerInventory[i].Title == productTitle && player.Money >= _sellerInventory[i].Cost)
-                {
-                    int cost = _sellerInventory[i].Cost;
-
-                    player.BuyProduct(cost, _sellerInventory[i]);
-                    Money += cost;
-                    _sellerInventory.Remove(_sellerInventory[i]);
+                    _inventory.Remove(product);
+                    break;
                 }
             }
         }
 
-        public void ShowInventory()
+        private void BuyProduct(int price, Product product)
+        {
+            Money -= price;
+            _inventory.Add(product);
+        }
+    }
+    
+    class Player: Person
+    {
+        public Player(List<Product> products, int money = 0) : base(products, money) { }
+
+        public override void ShowInventory()
+        {
+            Console.WriteLine("Игрок");
+
+            foreach (var product in _inventory)
+            {
+                Console.WriteLine($"{product.Title}");
+            }
+        }
+    }
+
+    class Seller: Person
+    {
+        public Seller(List<Product> products, int money = 0) : base(products, money) { }
+
+        public override void ShowInventory()
         {
             Console.WriteLine("Продавец");
 
-            foreach(var product in _sellerInventory)
+            foreach (var product in _inventory)
             {
                 Console.WriteLine($"{product.Title}: {product.Cost}");
             }
