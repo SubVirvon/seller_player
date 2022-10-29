@@ -34,37 +34,26 @@ namespace seller_player
 
     abstract class Person
     {
+        protected List<Product> inventory;
         public int Money { get; private set; }
-        protected List<Product> _inventory = new List<Product>();
+
 
         public Person(List<Product> products, int money)
         {
             Money = money;
-            _inventory = products;
+            inventory = products;
         }
 
         public abstract void ShowInventory();
 
-        public void SellProduct(Player player, string productTitle)
+        protected void TakeMoney(int money)
         {
-            foreach (var product in _inventory)
-            {
-                if (product.Title == productTitle && player.Money >= product.Cost)
-                {
-                    int cost = product.Cost;
-
-                    player.BuyProduct(cost, product);
-                    Money += cost;
-                    _inventory.Remove(product);
-                    break;
-                }
-            }
+            Money -= money;
         }
 
-        private void BuyProduct(int price, Product product)
+        protected void GiveMoney(int money)
         {
-            Money -= price;
-            _inventory.Add(product);
+            Money += money;
         }
     }
     
@@ -76,10 +65,16 @@ namespace seller_player
         {
             Console.WriteLine("Игрок");
 
-            foreach (var product in _inventory)
+            foreach (var product in inventory)
             {
                 Console.WriteLine($"{product.Title}");
             }
+        }
+
+        public void BuyProduct(int price, Product product)
+        {
+            TakeMoney(price);
+            inventory.Add(product);
         }
     }
 
@@ -91,9 +86,25 @@ namespace seller_player
         {
             Console.WriteLine("Продавец");
 
-            foreach (var product in _inventory)
+            foreach (var product in inventory)
             {
                 Console.WriteLine($"{product.Title}: {product.Cost}");
+            }
+        }
+
+        public void SellProduct(Player player, string productTitle)
+        {
+            foreach (var product in inventory)
+            {
+                if (product.Title == productTitle && player.Money >= product.Cost)
+                {
+                    int cost = product.Cost;
+
+                    player.BuyProduct(cost, product);
+                    GiveMoney(cost);
+                    inventory.Remove(product);
+                    break;
+                }
             }
         }
     }
