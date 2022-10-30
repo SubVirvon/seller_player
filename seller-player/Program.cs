@@ -12,21 +12,25 @@ namespace seller_player
         {
             bool isFinish = false;
             string input;
-            Player player = new Player(new List<Product> (), 1000);
-            Seller seller = new Seller(new List<Product> { new Product("кожаный нагрудник", 400), new Product("железные сапоги", 350), new Product("меч", 500), new Product("лук", 200), new Product("декоративный нож", 800) });
+            Player player = new Player("Игрок", new List<Product> (), 1000);
+            Seller seller = new Seller("Продавец", new List<Product> { new Product("кожаный нагрудник", 400), new Product("железные сапоги", 350), new Product("меч", 500), new Product("лук", 200), new Product("декоративный нож", 800) });
 
             while (isFinish == false)
             {
                 Console.SetCursorPosition(0, 3);
+
                 player.ShowInventory();
-                Console.WriteLine($"монет: {player.Money}");
-                Console.SetCursorPosition(0, 10);
+
+                Console.SetCursorPosition(0, 15);
+
                 seller.ShowInventory();
-                Console.WriteLine($"монет: {seller.Money}");
+
                 Console.SetCursorPosition(0, 0);
                 Console.Write("Приветствую вас!\nЧто желаете купить: ");
+
                 input = Console.ReadLine();
                 seller.SellProduct(player, input);
+
                 Console.Clear();
             }
         }
@@ -35,16 +39,30 @@ namespace seller_player
     abstract class Person
     {
         protected List<Product> Inventory;
+        private string Name;
         public int Money { get; private set; }
 
 
-        public Person(List<Product> products, int money)
+        public Person(string name, List<Product> products, int money)
         {
             Money = money;
             Inventory = products;
+            Name = name;
         }
 
-        public abstract void ShowInventory();
+        public virtual void ShowInventory()
+        {
+            Console.WriteLine($"{Name}:");
+
+            foreach (var product in Inventory)
+            {
+                ShowProductInfo(product);
+            }
+
+            Console.WriteLine($"\nмонет: {Money}");
+        }
+
+        protected abstract void ShowProductInfo(Product product);
 
         protected void TakeMoney(int money)
         {
@@ -59,38 +77,23 @@ namespace seller_player
     
     class Player: Person
     {
-        public Player(List<Product> products, int money = 0) : base(products, money) { }
-
-        public override void ShowInventory()
-        {
-            Console.WriteLine("Игрок");
-
-            foreach (var product in Inventory)
-            {
-                Console.WriteLine($"{product.Title}");
-            }
-        }
+        public Player(string name, List<Product> products, int money = 0) : base(name, products, money) { }
 
         public void BuyProduct(int price, Product product)
         {
             TakeMoney(price);
             Inventory.Add(product);
         }
+
+        protected override void ShowProductInfo(Product product)
+        {
+            Console.WriteLine($"{product.Title}");
+        }
     }
 
     class Seller: Person
     {
-        public Seller(List<Product> products, int money = 0) : base(products, money) { }
-
-        public override void ShowInventory()
-        {
-            Console.WriteLine("Продавец");
-
-            foreach (var product in Inventory)
-            {
-                Console.WriteLine($"{product.Title}: {product.Cost}");
-            }
-        }
+        public Seller(string name, List<Product> products, int money = 0) : base(name, products, money) { } 
 
         public void SellProduct(Player player, string productTitle)
         {
@@ -106,6 +109,11 @@ namespace seller_player
                     break;
                 }
             }
+        }
+
+        protected override void ShowProductInfo(Product product)
+        {
+            Console.WriteLine($"{product.Title}: {product.Cost}");
         }
     }
 
