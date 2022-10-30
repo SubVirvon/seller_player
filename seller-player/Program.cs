@@ -39,7 +39,7 @@ namespace seller_player
     abstract class Person
     {
         protected List<Product> Inventory;
-        private string Name;
+        private string _name;
         public int Money { get; private set; }
 
 
@@ -47,12 +47,12 @@ namespace seller_player
         {
             Money = money;
             Inventory = products;
-            Name = name;
+            _name = name;
         }
 
         public virtual void ShowInventory()
         {
-            Console.WriteLine($"{Name}:");
+            Console.WriteLine($"{_name}:");
 
             foreach (var product in Inventory)
             {
@@ -64,12 +64,12 @@ namespace seller_player
 
         protected abstract void ShowProductInfo(Product product);
 
-        protected void TakeMoney(int money)
+        protected void GiveMoney(int money)
         {
             Money -= money;
         }
 
-        protected void GiveMoney(int money)
+        protected void TakeMoney(int money)
         {
             Money += money;
         }
@@ -81,7 +81,7 @@ namespace seller_player
 
         public void BuyProduct(int price, Product product)
         {
-            TakeMoney(price);
+            GiveMoney(price);
             Inventory.Add(product);
         }
 
@@ -104,7 +104,7 @@ namespace seller_player
                     int cost = product.Cost;
 
                     player.BuyProduct(cost, product);
-                    GiveMoney(cost);
+                    TakeMoney(cost);
                     Inventory.Remove(product);
                     break;
                 }
